@@ -8,9 +8,10 @@ from ..logger import configure_logs
 from ..utils import verify_jwt, get_jwt_login
 from ..models.articles import ArticleAnnouncement, ArticleData, ArticleFull, ImagesAdd, ArticleAdd
 from ..database.utils import check_article_owner
-from ..database.articles import (select_articles_announcement, select_article, select_article_full, insert_article,
-								 update_article, delete_article, select_articles_by_search)
-from ..database.images import delete_images, insert_images
+from ..database.articles.articles import (select_articles_announcement, select_article, select_article_full,
+										  insert_article,
+										  update_article, delete_article, select_articles_by_search)
+from app.database.articles.images import delete_images, insert_images
 
 __all__: list[str] = ["feed_router"]
 feed_router: APIRouter = APIRouter(
@@ -144,7 +145,7 @@ async def remove_article_route(article_id: int, authorization: str = Header(...)
 @feed_router.get("/search_articles")
 @verify_jwt
 async def search_articles_route(query: str, amount: Optional[int] = 5, chunk: Optional[int] = 1,
-								login: Optional[int] = None, authorization: str = Header(...)):
+								login: Optional[str] = None, authorization: str = Header(...)):
 	try:
 		result: list[dict] = select_articles_by_search(query_str=query, amount=amount, chunk=chunk, login=login)
 		return JSONResponse(status_code=status.HTTP_200_OK, content={"success": True, "results": result})

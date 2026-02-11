@@ -9,9 +9,9 @@ from logging import Logger
 import base64
 import uuid
 
-from .connect import connect_redis
-from ..logger import configure_logs
-from ..models.articles import ImagesAdd
+from app.database.connect import connect_redis
+from app.logger import configure_logs
+from app.models.articles import ImagesAdd
 
 __all__ = ["insert_images", "delete_images", "select_article_images", "get_image_bytes"]
 logger: Logger = configure_logs(__name__)

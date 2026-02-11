@@ -5,10 +5,10 @@ import hashlib
 from psycopg2 import extensions, errors
 from psycopg2.extras import DictCursor
 
-from .connect import connect_pg
-from .exceptions.change_password import *
-from ..logger import configure_logs
-from ..models.user_info import AuthorInfo
+from app.database.connect import connect_pg
+from app.database.exceptions.change_password import *
+from app.logger import configure_logs
+from app.models.users import AuthorInfo
 
 __all__: list[str] = ["insert_user", "change_password", "process_user", "check_credentials", "check_login",
 					  "select_user_info", "change_description"]

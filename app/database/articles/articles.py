@@ -4,9 +4,9 @@ from logging import Logger
 from sqlite3 import InterfaceError, OperationalError
 from psycopg2.extras import RealDictCursor
 
-from .connect import connect_pg
-from ..logger import configure_logs
-from ..models.articles import ArticleData, ArticleAnnouncement, ArticleFull
+from app.database.connect import connect_pg
+from app.logger import configure_logs
+from app.models.articles import ArticleData, ArticleAnnouncement, ArticleFull
 
 __all__: list[str] = ["select_articles_announcement", "select_article", "select_article_full", "insert_article",
 					  "update_article", "delete_article", "select_articles_by_search"]

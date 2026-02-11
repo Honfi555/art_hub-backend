@@ -8,8 +8,9 @@ from psycopg2.errorcodes import UNIQUE_VIOLATION
 from ..logger import configure_logs
 from ..utils import create_jwt, verify_jwt
 from ..models.authorization import SignInData, ChangePasswordData
-from ..database.users import process_user, check_credentials, check_login, change_password
-from ..database.exceptions.change_password import *
+from ..database.users.users import process_user, check_credentials, check_login, change_password
+from ..database.exceptions.change_password import IncorrectLoginException, OldPasswordMismatchException, \
+	SamePasswordException
 
 __all__: list[str] = ["authorization_router"]
 authorization_router: APIRouter = APIRouter(
@@ -42,7 +43,7 @@ async def sign_up_route(data: SignInData):
 		raise HTTPException(status.HTTP_409_CONFLICT, "Пользователь с таким логином уже существует")
 	except Exception as e:
 		logger.exception("Возникла непредвиденная ошибка при регистрации пользователя с логином %s. Ошибка: %s",
-						  data.login, e)
+						 data.login, e)
 		raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR,
 							"Возникла непредвиденная ошибка на стороне сервера")
 
@@ -52,7 +53,8 @@ async def sign_up_route(data: SignInData):
 async def change_password_route(data: ChangePasswordData, authorization: str = Header(...)):
 	try:
 		if change_password(data.login, data.old_password, data.new_password):
-			return JSONResponse(content={"success": True, "message": "Пароль успешно сменён"}, status_code=status.HTTP_200_OK)
+			return JSONResponse(content={"success": True, "message": "Пароль успешно сменён"},
+								status_code=status.HTTP_200_OK)
 		raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 							detail="Непредвиденная ошибка, на стороне сервера")
 	except (IncorrectLoginException, OldPasswordMismatchException) as e:

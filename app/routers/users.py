@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 
 from ..logger import configure_logs
 from ..utils import verify_jwt, get_jwt_login
-from ..models.user_info import AuthorInfo, DescriptionUpdate
-from ..database.users import select_user_info, change_description
+from ..models.users import AuthorInfo, DescriptionUpdate
+from ..database.users.users import select_user_info, change_description
 
 __all__: list[str] = ["users_router"]
 users_router: APIRouter = APIRouter(
